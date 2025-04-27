@@ -22,10 +22,9 @@ class MyApp extends StatelessWidget {
   }
 }
 
-// Pantalla de bienvenida (Splash Screen)
 class WelcomeScreen extends StatelessWidget {
   // Añadir 'key' como parámetro al constructor
-  const WelcomeScreen({super.key}); // <-- Aquí agregamos el parámetro 'key'
+  const WelcomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

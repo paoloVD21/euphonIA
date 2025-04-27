@@ -31,6 +31,7 @@ class _PantallaGrabacionState extends State<PantallaGrabacion> {
     );
   }
 
+  // Widget para reproducir grabación
   Widget _buildUI() {
     return SizedBox(
       width: MediaQuery.sizeOf(context).width,
@@ -39,28 +40,33 @@ class _PantallaGrabacionState extends State<PantallaGrabacion> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           if (recordingPath != null)
-            MaterialButton(
-              onPressed: () async {
-                if (audioPlayer.playing) {
-                  audioPlayer.stop();
-                  setState(() {
-                    isPlaying = false;
-                  });
-                } else {
-                  await audioPlayer.setFilePath(recordingPath!);
-                  await audioPlayer.play();
-                  setState(() {
-                    isPlaying = true;
-                  });
-                }
-              },
-              color: Theme.of(context).colorScheme.primary,
-              child: Text(
-                isPlaying
-                    ? "Detener la reproducción"
-                    : "Reproducir la reproducción",
-                style: const TextStyle(color: Colors.white),
-              ), //Texto
+            SizedBox(
+              height: 60,
+              child: MaterialButton(
+                // Estado del botón
+                onPressed: () async {
+                  if (audioPlayer.playing) {
+                    audioPlayer.stop();
+                    setState(() {
+                      isPlaying = false;
+                    });
+                  } else {
+                    await audioPlayer.setFilePath(recordingPath!);
+                    await audioPlayer.play();
+                    setState(() {
+                      isPlaying = true;
+                    });
+                  }
+                },
+                color: Colors.deepPurple[900],
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50),
+                ),
+                child: Text(
+                  isPlaying ? "Detener Audio" : "Reproducir Audio",
+                  style: const TextStyle(color: Colors.white, fontSize: 20),
+                ),
+              ),
             ),
           if (recordingPath == null)
             const Text(
@@ -76,44 +82,52 @@ class _PantallaGrabacionState extends State<PantallaGrabacion> {
     );
   }
 
+  // Widget para grabar
+  // Widget para grabar
   Widget _recordingButton() {
     return Align(
       alignment: Alignment.bottomCenter, // Centra el botón en la parte inferior
       child: Padding(
-        padding: const EdgeInsets.only(
-          bottom: 200.0,
-          left: 30.0,
-        ), // Espacio desde el borde inferior
-        child: FloatingActionButton(
-          backgroundColor: Colors.orange,
-          onPressed: () async {
-            if (isRecording) {
-              String? filePath = await audioRecorder.stop();
-              if (filePath != null) {
-                setState(() {
-                  isRecording = false;
-                  recordingPath = filePath;
-                });
+        padding: const EdgeInsets.only(bottom: 150.0, left: 30.0),
+        child: SizedBox(
+          width: 80,
+          height: 80,
+          child: FloatingActionButton(
+            backgroundColor: Colors.orange,
+            shape: const CircleBorder(), // Sigue siendo círculo
+            onPressed: () async {
+              if (isRecording) {
+                String? filePath = await audioRecorder.stop();
+                if (filePath != null) {
+                  setState(() {
+                    isRecording = false;
+                    recordingPath = filePath;
+                  });
+                }
+              } else {
+                if (await audioRecorder.hasPermission()) {
+                  final Directory appDocumentsDir =
+                      await getApplicationDocumentsDirectory();
+                  final String filePath = p.join(
+                    appDocumentsDir.path,
+                    "recording.wav",
+                  );
+                  await audioRecorder.start(
+                    const RecordConfig(),
+                    path: filePath,
+                  );
+                  setState(() {
+                    isRecording = true;
+                    recordingPath = null;
+                  });
+                }
               }
-            } else {
-              if (await audioRecorder.hasPermission()) {
-                final Directory appDocumentsDir =
-                    await getApplicationDocumentsDirectory();
-                final String filePath = p.join(
-                  appDocumentsDir.path,
-                  "recording.wav",
-                );
-                await audioRecorder.start(const RecordConfig(), path: filePath);
-                setState(() {
-                  isRecording = true;
-                  recordingPath = null;
-                });
-              }
-            }
-          },
-          child: Icon(
-            isRecording ? Icons.stop : Icons.mic,
-            color: Colors.deepPurple[900], // Cambia el color del icono
+            },
+            child: Icon(
+              isRecording ? Icons.stop : Icons.mic,
+              color: Colors.deepPurple[900],
+              size: 40, // <-- Icono un poquito más grande también (opcional)
+            ),
           ),
         ),
       ),
