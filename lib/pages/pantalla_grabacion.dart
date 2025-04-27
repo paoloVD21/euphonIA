@@ -94,7 +94,7 @@ class _PantallaGrabacionState extends State<PantallaGrabacion> {
           height: 80,
           child: FloatingActionButton(
             backgroundColor: Colors.orange,
-            shape: const CircleBorder(), // Sigue siendo círculo
+            shape: const CircleBorder(),
             onPressed: () async {
               if (isRecording) {
                 String? filePath = await audioRecorder.stop();
@@ -126,7 +126,7 @@ class _PantallaGrabacionState extends State<PantallaGrabacion> {
             child: Icon(
               isRecording ? Icons.stop : Icons.mic,
               color: Colors.deepPurple[900],
-              size: 40, // <-- Icono un poquito más grande también (opcional)
+              size: 40,
             ),
           ),
         ),
