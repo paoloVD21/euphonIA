@@ -77,36 +77,45 @@ class _PantallaGrabacionState extends State<PantallaGrabacion> {
   }
 
   Widget _recordingButton() {
-    return FloatingActionButton(
-      onPressed: () async {
-        if (isRecording) {
-          String? filePath = await audioRecorder.stop();
-          if (filePath != null) {
-            setState(() {
-              isRecording = false;
-              recordingPath = filePath;
-            });
-          }
-        } else {
-          if (await audioRecorder.hasPermission()) {
-            final Directory appDocumentsDir =
-                await getApplicationDocumentsDirectory();
-            final String filePath = p.join(
-              appDocumentsDir.path,
-              "recording.wav",
-            );
-            await audioRecorder.start(const RecordConfig(), path: filePath);
-            setState(() {
-              isRecording = true;
-              recordingPath = null;
-            });
-          }
-        }
-      },
-      child: Icon(
-        isRecording
-            ? Icons.stop
-            : Icons.mic, // Cambia el icono según el estado de grabación
+    return Align(
+      alignment: Alignment.bottomCenter, // Centra el botón en la parte inferior
+      child: Padding(
+        padding: const EdgeInsets.only(
+          bottom: 200.0,
+          left: 30.0,
+        ), // Espacio desde el borde inferior
+        child: FloatingActionButton(
+          backgroundColor: Colors.orange,
+          onPressed: () async {
+            if (isRecording) {
+              String? filePath = await audioRecorder.stop();
+              if (filePath != null) {
+                setState(() {
+                  isRecording = false;
+                  recordingPath = filePath;
+                });
+              }
+            } else {
+              if (await audioRecorder.hasPermission()) {
+                final Directory appDocumentsDir =
+                    await getApplicationDocumentsDirectory();
+                final String filePath = p.join(
+                  appDocumentsDir.path,
+                  "recording.wav",
+                );
+                await audioRecorder.start(const RecordConfig(), path: filePath);
+                setState(() {
+                  isRecording = true;
+                  recordingPath = null;
+                });
+              }
+            }
+          },
+          child: Icon(
+            isRecording ? Icons.stop : Icons.mic,
+            color: Colors.deepPurple[900], // Cambia el color del icono
+          ),
+        ),
       ),
     );
   }
